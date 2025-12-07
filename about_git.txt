@@ -10,3 +10,5 @@ git commit -m "〇〇機能を追加" （記録する）
 git push origin main （GitHubに送る）
 
 ※ origin main は省略して単に git push だけでいける場合もあります。
+
+変更してみた！
