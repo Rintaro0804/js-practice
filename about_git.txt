@@ -1,0 +1,12 @@
+🔄 明日から使える「基本の3ステップ」
+一度設定（git init や git remote add）が終わったプロジェクトでは、日々の作業はこの3つのコマンドの繰り返しになります。
+
+コードを書く。
+
+git add . （箱に詰める）
+
+git commit -m "〇〇機能を追加" （記録する）
+
+git push origin main （GitHubに送る）
+
+※ origin main は省略して単に git push だけでいける場合もあります。
