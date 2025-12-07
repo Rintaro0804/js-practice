@@ -1,26 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>JS練習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スマート割り勘</title>
+    <style>
+        /* --- Google風デザイン (CSS) --- */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa; /* Googleの背景に近い薄いグレー */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #202124;
+        }
+
+        .card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px; /* 角を少し丸く */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* 浮いているような影 */
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 24px;
+            font-weight: normal;
+            color: #202124;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #5f6368;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            box-sizing: border-box; /* パディングを含めた幅計算 */
+            outline: none;
+            transition: 0.2s;
+        }
+
+        /* 入力時にGoogleっぽい青い枠線を出す */
+        input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+
+        button {
+            background-color: #1a73e8; /* Google Blue */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #1557b0; /* ホバー時は少し濃く */
+        }
+
+        #result-area {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dadce0;
+            display: none; /* 最初は隠しておく */
+        }
+
+        .price {
+            font-size: 32px;
+            color: #1a73e8;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .lucky-person {
+            background-color: #e8f0fe;
+            color: #1967d2;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1 id="target-text">ここはタイトルです</h1>
-    <button id="change-btn">魔法をかける</button>
+
+    <div class="card">
+        <h1>割り勘チェック</h1>
+        
+        <div class="input-group">
+            <label>合計金額（円）</label>
+            <input type="number" id="total-bill" placeholder="例: 10000">
+        </div>
+
+        <div class="input-group">
+            <label>人数（人）</label>
+            <input type="number" id="people-count" placeholder="例: 3">
+        </div>
+
+        <button id="calc-btn">計算する</button>
+
+        <div id="result-area">
+            <p>1人あたり</p>
+            <div class="price" id="price-per-person">0円</div>
+            <div class="lucky-person" id="lucky-message"></div>
+        </div>
+    </div>
 
     <script>
-        // 2. JavaScriptでHTMLの要素（オブジェクト）を捕まえます
-        // document.querySelector(...) は「...というIDのタグを探してこい」という命令です
-        const title = document.querySelector("#target-text");
-        const button = document.querySelector("#change-btn");
+        // --- ここからロジック (JavaScript) ---
 
-        // 3. 「ボタンがクリックされたら」というイベントを作ります
-        button.addEventListener("click", () => {
-            // ここに実行したい処理を書きます
-            title.textContent = "JavaScriptで書き換えました！";
-            title.style.color = "red"; // 色も変えられます
-            
-            console.log("ボタンが押されました");
+        const btn = document.querySelector("#calc-btn");
+        const resultArea = document.querySelector("#result-area");
+        const priceDisplay = document.querySelector("#price-per-person");
+        const luckyMessage = document.querySelector("#lucky-message");
+
+        btn.addEventListener("click", () => {
+            // 1. データの受け取り
+            // inputの中身は文字(String)なので、Number()で数値に変換します
+            const bill = Number(document.querySelector("#total-bill").value);
+            const people = Number(document.querySelector("#people-count").value);
+
+            // バリデーション（入力チェック）
+            if (bill <= 0 || people <= 0) {
+                alert("金額と人数を正しく入力してください");
+                return;
+            }
+
+            // 2. 数値計算とロジック
+            // Math.floor は「切り捨て」です
+            const payPerPerson = Math.floor(bill / people);
+            const remainder = bill % people; // % は「余り」を出す計算
+
+            // 3. ランダム機能
+            // 1 から 人数(people) までのランダムな数字を作ります
+            // Math.random() は 0以上1未満の小数を出すので、工夫が必要です
+            const luckyNumber = Math.floor(Math.random() * people) + 1;
+
+            // 4. 結果を画面に表示 (DOM操作)
+            priceDisplay.textContent = payPerPerson + "円";
+
+            if (remainder > 0) {
+                // 余りがある場合
+                luckyMessage.style.display = "block";
+                luckyMessage.innerHTML = 
+                    `割り切れませんでした！<br>余りの <strong>${remainder}円</strong> は...<br>
+                    <strong>${luckyNumber}番目の人</strong> が払ってください！`;
+            } else {
+                // ピッタリ割り切れた場合
+                luckyMessage.style.display = "none";
+            }
+
+            // 結果エリアを表示する
+            resultArea.style.display = "block";
         });
     </script>
 </body>
