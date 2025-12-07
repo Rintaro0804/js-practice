@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>JS練習</title>
+</head>
+<body>
+    <h1 id="target-text">ここはタイトルです</h1>
+    <button id="change-btn">魔法をかける</button>
+
+    <script>
+        // 2. JavaScriptでHTMLの要素（オブジェクト）を捕まえます
+        // document.querySelector(...) は「...というIDのタグを探してこい」という命令です
+        const title = document.querySelector("#target-text");
+        const button = document.querySelector("#change-btn");
+
+        // 3. 「ボタンがクリックされたら」というイベントを作ります
+        button.addEventListener("click", () => {
+            // ここに実行したい処理を書きます
+            title.textContent = "JavaScriptで書き換えました！";
+            title.style.color = "red"; // 色も変えられます
+            
+            console.log("ボタンが押されました");
+        });
+    </script>
+</body>
+</html>
